@@ -29,25 +29,34 @@ namespace ServerTest
 
             sw.AutoFlush = true;
 
+            bool jatka = true;
             // luetaan ja käsitellään komennot
-
-            string komento = sr.ReadLine();
-            string vastaus = "";
-            // päivitetään aika
-            switch (komento)
+            while (jatka)
             {
-                case "TIME":
-                    vastaus = DateTime.Now.ToString();
-                    break;
-                case "NUMBER_OF_CLIENTS":
-                    vastaus = "1"; // TODO
-                    break;
-                case "QUIT":
-                    vastaus = "lopetus";
-                    break;
+                string komento = sr.ReadLine();
+                string vastaus = "";
+
+                if (ns.DataAvailable)
+                {
+                   
+                    // päivitetään aika
+                    switch (komento)
+                    {
+                        case "TIME":
+                            vastaus = DateTime.Now.ToString();
+                            break;
+                        case "NUMBER_OF_CLIENTS":
+                            vastaus = "1"; // TODO
+                            break;
+                        case "QUIT":
+                            vastaus = "lopetus";
+                            break;
+                    }
+                    sw.WriteLine(vastaus);
+                    Console.WriteLine(vastaus);
+                }
             }
-            sw.WriteLine(vastaus);
-            Console.WriteLine(vastaus);
+            
             // suljetaan yhteydet
             sw.Close();
             sr.Close();
