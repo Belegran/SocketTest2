@@ -13,6 +13,7 @@ namespace ServerTest
     class ClientThread
     {
         private TcpClient client;
+
         public ClientThread(TcpClient client)
         {
             this.client = client;
@@ -33,12 +34,15 @@ namespace ServerTest
             // luetaan ja käsitellään komennot
             while (jatka)
             {
-                string komento = sr.ReadLine();
-                string vastaus = "";
+
+               
+                DateTime viimeinenKomento = DateTime.Now;
 
                 if (ns.DataAvailable)
                 {
-                   
+                    string komento = sr.ReadLine();
+
+                    string vastaus = "";
                     // päivitetään aika
                     switch (komento)
                     {
@@ -54,6 +58,22 @@ namespace ServerTest
                     }
                     sw.WriteLine(vastaus);
                     Console.WriteLine(vastaus);
+                    
+                }
+                else
+                {
+                    // lopetetaan jos viimeisestä komennosta on kulunut yli min
+                    DateTime nyt = DateTime.Now;
+                    TimeSpan erotus = nyt - viimeinenKomento;
+                    if (erotus.TotalSeconds > 60)
+                    
+                        jatka = false;
+                    else
+	                
+                        Thread.Sleep(500);
+                    
+                       
+                    }
                 }
             }
             
