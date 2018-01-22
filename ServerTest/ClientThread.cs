@@ -24,11 +24,10 @@ namespace ServerTest
         {
             // avataan yhteydet
             // avataan streamit
-            NetworkStream ns = client.GetStream();
-            StreamWriter sw = new StreamWriter(ns);
-            StreamReader sr = new StreamReader(ns);
+            SocketUtilities.SocketUtilityClass su = new SocketUtilities.SocketUtilityClass(client);
 
-            sw.AutoFlush = true;
+            su.Open();
+
 
             bool jatka = true;
             // luetaan ja käsitellään komennot
@@ -38,25 +37,25 @@ namespace ServerTest
                
                 DateTime viimeinenKomento = DateTime.Now;
 
-                if (ns.DataAvailable)
+                if (su.DataAvailable())
                 {
-                    string komento = sr.ReadLine();
+                    string komento = su.ReadMessage();
 
                     string vastaus = "";
                     // päivitetään aika
                     switch (komento)
                     {
-                        case "TIME":
+                        case SocketUtilities.Commands.TIME:
                             vastaus = DateTime.Now.ToString();
                             break;
-                        case "NUMBER_OF_CLIENTS":
+                        case SocketUtilities.Commands.NUMBER_OF_CLIENTS:
                             vastaus = "1"; // TODO
                             break;
-                        case "QUIT":
+                        case SocketUtilities.Commands.QUIT:
                             vastaus = "lopetus";
                             break;
                     }
-                    sw.WriteLine(vastaus);
+                    su.WriteMessage(vastaus);
                     Console.WriteLine(vastaus);
                     
                 }
@@ -76,12 +75,10 @@ namespace ServerTest
                     
                 }
             }
-            
+
             // suljetaan yhteydet
-            sw.Close();
-            sr.Close();
-            ns.Close();
-            client.Close();
+            su.Close();
+            
         }
     }
 }
